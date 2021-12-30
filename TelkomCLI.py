@@ -1,7 +1,6 @@
 import sys
-# from typing import List
 
-FUNCTIONLIST=[
+FUNCTIONLIST=[ #database
     {
         "Function":'help',
         "Alternate":'-h',
@@ -22,6 +21,9 @@ HElPFUNCTIONPOSITIONNUMBER = 0 #Help dictionary posituion order base on FUNCTION
 TRANSPOSEFUNCTIONPOSITIONNUMBER = 1 #TRANSPOSE dictionary posituion order base on FUNCTIONLIST
 
 def ReadArgs(Args, FunctionList):
+    """
+    check for input argument by comparing database into argument, return list of function call in argument
+    """
     try:
         ReqFunction = []
         for Function in FunctionList:
@@ -35,6 +37,9 @@ def ReadArgs(Args, FunctionList):
     return ReqFunction
 
 def Help(AllFunctionNames):
+    """
+    when argument input call, this function will show up
+    """
     print(f'Fungsi Nama\tAlternative\tFungsi Deskripsi \n')
     for Function in AllFunctionNames:
         print(f'{Function["Function"]}\t\t{Function["Alternate"]}\t\t{Function["Description"]}')
@@ -43,6 +48,9 @@ def Help(AllFunctionNames):
     return None
 
 def ConvertToJson(FilePath, FileOutPut = None):
+    """
+    function to convert to json by rewriting all line to new file
+    """
     try:
         File = open(FilePath,"r")
         NewFileName = FilePath[:-4]
@@ -58,6 +66,9 @@ def ConvertToJson(FilePath, FileOutPut = None):
     return None
 
 def ConvertToPlain(FilePath, FileOutPut = None):
+    """
+    function to convert to plain text by rewriting all line to new file
+    """
     try:
         File = open(FilePath,"r")
         NewFileName = FilePath[:-3]
@@ -73,6 +84,9 @@ def ConvertToPlain(FilePath, FileOutPut = None):
     return None
 
 def Transpose(Args):
+    """
+    function when only transpose in argument, will chose json or plain text convertion
+    """
     try:
         FilePath =  Args[0]
         TransposeType = None if len(Args)<3 else str(Args[2]).lower()
@@ -86,10 +100,15 @@ def Transpose(Args):
     return None
 
 def Output(Args):
+    """
+    function when there is output in argument, use same convert funtion with Transpose but with output path and also there is validation for the output path so the Transpose and expekted Output Path are the same 
+    example: -t json but -o to .txt
+    """
     try:
         FilePath =  Args[0]
         FileOutput = Args[-1]
         TransposeType = None if len(Args)<5 else str(Args[2]).lower()
+        
         if TransposeType == 'json' and TransposeType != str(FileOutput[-4:]):
             raise ValueError("format transpose berbeda dengan otput path")
         elif TransposeType == 'txt' and TransposeType != str(FileOutput[-3:]):
@@ -105,6 +124,9 @@ def Output(Args):
     return None
     
 def Exe(FunctionLists, Args, ListOfAllFunctionNames, HelpFunctionOrder, TransposeFunctionOrder):
+    """
+    function after ReadArgs to determine wich one suited for condition (only if els)
+    """
     try:
         if len(FunctionLists)<2 and FunctionLists[0] == ListOfAllFunctionNames[HelpFunctionOrder]["Function"]:
             Help(ListOfAllFunctionNames)
@@ -120,13 +142,9 @@ def Exe(FunctionLists, Args, ListOfAllFunctionNames, HelpFunctionOrder, Transpos
     return None
 
 if __name__ == "__main__":
-    # Args:List[str] = sys.argv
     Args = []
     for Counter, Arg in enumerate(sys.argv):
         if Counter>0:
-            # Args.append(str(Arg).lower())
             Args.append(str(Arg))
-    # print(Args)
     Functions = ReadArgs(Args, FUNCTIONLIST)
-    # print(Functions)
     Exe(Functions, Args, FUNCTIONLIST, HElPFUNCTIONPOSITIONNUMBER, TRANSPOSEFUNCTIONPOSITIONNUMBER)
